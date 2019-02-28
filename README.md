@@ -4,9 +4,9 @@ y actuadores que permite una comunicación entre parametros establecidos con el 
 Se le incluye la realización de informes donde se establecen datos como el número de veces que se enciende la bombilla
 
 ## Integrantes del equipo
-Jaime Palomino Vaquero-jaimepalominovaquero
-Pablo Núñez Hernandez-pablonhernandez
-Sara Vázquez Pereda-saravazquezp
+-Jaime Palomino Vaquero-jaimepalominovaquero .
+-Pablo Núñez Hernandez-pablonhernandez .
+-Sara Vázquez Pereda-saravazquezp .
 
 
 ## Objetivos del trabajo
