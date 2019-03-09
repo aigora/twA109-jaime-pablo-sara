@@ -13,3 +13,12 @@ Sara Vázquez Pereda-saravazquezp
 - Programación en C de sensores y  actuadores (sensores, bombillas,...) según distintos criterios establecidos en el PC. 
 - Comunicación entre sensores, actuares y condiciones en el Pc mediante la plataforma Arduino.
 - Realización de informes que nos permitan analizar el uso de los distintos dispositivos.
+
+## Sensores y acutadores. 
+-Servomotores (ventilador,enrollar persiana, abrir puerta).
+-Receptor infrarrojo (detectar numeración de la puerta escrita por mando).
+-Sensor LDR (para la persiana).
+-Sensor PTC (para la temperatura).
+-Sensor infrarrojo (para encender la luz).
+-Led (como bombilla).
+
