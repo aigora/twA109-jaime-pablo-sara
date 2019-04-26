@@ -1,0 +1,14 @@
+ENCENDIDO DE LED
+(ARDUINO):
+	http://mecabot-ula.org/tutoriales/arduino/practica1-encender-y-apagar-con-arduino/
+
+CONTROL DE LA HORA CON SOFTWARE Y RTC 
+(ARDUINO):
+	https://programarfacil.com/blog/arduino-blog/reloj-con-arduino-rtc/
+(C):(ni puta idea)
+	https://poesiabinaria.net/2012/06/obtener-la-fecha-y-hora-formateada-en-c/
+
+FINAL DE CARRERA:
+   if(pin == HIGH) {
+	...................
+   }
