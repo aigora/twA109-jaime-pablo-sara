@@ -39,7 +39,7 @@ void loop() {
   delay(1000);
 }
 
-(C):(ni puta idea)
+(C):
 	https://poesiabinaria.net/2012/06/obtener-la-fecha-y-hora-formateada-en-c/
 
 FINAL DE CARRERA:
