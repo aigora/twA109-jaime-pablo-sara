@@ -46,3 +46,6 @@ FINAL DE CARRERA:
    if(pin == HIGH) {
 	...................
    }
+
+SENSOR DE LUMINOSIDAD:
+	https://polaridad.es/ldr-fotorresistencia-luz-luminosidad-medir-medicion-arduino/
