@@ -5,6 +5,40 @@ ENCENDIDO DE LED
 CONTROL DE LA HORA CON SOFTWARE Y RTC 
 (ARDUINO):
 	https://programarfacil.com/blog/arduino-blog/reloj-con-arduino-rtc/
+
+#include <TimeLib.h>
+
+// Declaramos la variable del tipo time_t
+time_t fecha;
+
+void setup() {
+  Serial.begin(9600);
+  // Establecemos la fecha
+  setTime(12, 32, 0, 13, 12, 2016);
+
+  // Obtenemos la fecha actual
+  fecha = now();
+}
+
+void loop() {
+  // Imprimimos la hora
+  Serial.print("Hora: ");
+  Serial.print(hour(fecha));
+  Serial.print(":");
+  Serial.print(minute(fecha));
+  Serial.print(":");
+  Serial.print(second(fecha));
+
+  Serial.print("  ");
+  Serial.print(day(fecha));
+  Serial.print("/");
+  Serial.print(month(fecha));
+  Serial.print("/");
+  Serial.println(year(fecha));
+
+  delay(1000);
+}
+
 (C):(ni puta idea)
 	https://poesiabinaria.net/2012/06/obtener-la-fecha-y-hora-formateada-en-c/
 
