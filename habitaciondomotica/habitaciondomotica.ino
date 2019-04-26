@@ -14,7 +14,7 @@ void loop()
   if (value == HIGH)                  //Si detecta presencia
     {
       digitalWrite(led,HIGH);         // Enciende el led
-      delay (20000);
+      delay (20000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento
     }    
   else                                //Si no detecta presencia
       digitalWrite(led,LOW);          //Se apaga el led
