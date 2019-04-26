@@ -25,5 +25,5 @@ void loop()
   else                                //Si no detecta presencia
       digitalWrite(led,LOW);          //Se apaga el led
 }
-
+  
  
