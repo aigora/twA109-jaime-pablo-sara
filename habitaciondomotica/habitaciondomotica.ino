@@ -4,6 +4,7 @@ const int led= 3;     //LED en pin 3
 int estadopir;        //Detección o no de presencia
 time_t fecha;         // Declaramos la variable del tipo time_t
 
+
 void setup() 
 {
   Serial.begin(9600);
