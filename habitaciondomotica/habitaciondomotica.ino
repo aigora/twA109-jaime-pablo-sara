@@ -1,4 +1,4 @@
-#include <Time.h>
+#include <TimeLib.h>
 const int pir= 2;     //Pin es el  2
 const int led= 3;     //LED en pin 3
 int estadopir;        //Detección o no de presencia
