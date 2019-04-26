@@ -1,4 +1,3 @@
-
 const int pir= 2;     //Pin es el  2
 const int led= 3;     //LED en pin 3
 int estadopir;          //Detección o no de presencia
@@ -11,14 +10,14 @@ void setup()
 
 void loop() 
 {
-  int value= digitalRead(pir); //Leer pir
+  int value= digitalRead(pir);         //Leer pir
   if (value == HIGH)                  //Si detecta presencia
     {
-      digitalWrite(led,HIGH);                         // Deteccion de presencia activado
-  }    
-  else {
-      digitalWrite(led,LOW);
-  }
-  }
+      digitalWrite(led,HIGH);         // Enciende el led
+      delay (20000);
+    }    
+  else                                //Si no detecta presencia
+      digitalWrite(led,LOW);          //Se apaga el led
+}
 
  
