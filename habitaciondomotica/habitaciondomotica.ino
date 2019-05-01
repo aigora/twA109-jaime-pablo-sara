@@ -53,16 +53,32 @@ void bombilla (int dia, int presencia)
  {
   digitalWrite(led,HIGH);         // Enciende el led
   delay (20000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
+  digitalWrite(led,LOW);
 }
   else 
   digitalWrite(led,LOW);          //Se apaga el led
 }
 
+void persiana (luz)
+{ 
+  return 0;
+}
+
+int clave (void)
+{
+}
+
+void puerta (clave)
+{
+}
+
 void loop() 
 {
-  int luz (void);
-  int detector_presencia (void);
-  int bombilla (luz, pir);  
-}
+  luz (void);
+  detector_presencia (void);
+  bombilla (luz, pir);  
+  persiana (luz);
+  clave (void);
+  puerta (clave);
   
  
