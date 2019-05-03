@@ -39,8 +39,8 @@ int repetir1=0, repetir2=0;
 int pos;
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Posiciones de los sensores
-const int pir= 2;                               //PIR en pin  2
-const int led= 12;                              //LED en pin 3
+const int pir= 8;                               //PIR en pin 8
+const int led= 12;                              //LED en pin 12
 int ir= 11;                                     //IR en pin 11
 IRrecv irrecv(ir);           
 decode_results resultados;
@@ -50,8 +50,7 @@ Servo servo;
 void setup()    
 {
   Serial.begin(9600);
-  setTime(12, 32, 0, 13, 12, 2016);  // Establecemos la fecha
-  fecha = now();                     // Obtenemos la fecha actual
+  setTime(7, 59, 45, 13, 12, 2016);  // Establecemos la fecha
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();               // Empezamos la recepción  por IR
@@ -176,8 +175,9 @@ int detector_presencia (void)
 //HORA
 int hora (void)
 {
+  fecha = now();                     // Obtenemos la fecha actual
   dia=0;
-  if ((hour(fecha))>=8 && (hour(fecha))<=20)
+  if ((hour(fecha))>=8 && (hour(fecha))<20)
   dia=1;
   return dia;
 }
@@ -246,6 +246,7 @@ void motor (int tiempo)
   else
   if (tiempo==1 && repetir2==0)
   {
+  init_GPIO();
   go_Back();//Enrolla
   set_Motorspeed(255,255);
   delay(5000);
