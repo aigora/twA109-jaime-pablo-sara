@@ -80,7 +80,7 @@ int digito (void)
   int password []={0,0,0,0};
   int error=0;
   int i;
-  for (i=0;digito()!=14535;i++)
+  for (i=0;digito!=14535;i++)
   {
   switch (digito())
   {
@@ -278,10 +278,30 @@ void puerta (int correcto)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
+  int estado;
+  char dato;
+  switch (estado)
+{
+case 0:
+{
+ Serial.read();
+ if (Serial.available() > 0)
+  if (dato=='1')
+    estado=1;
+}
+
+case 1:
+{
   tiempo=hora ();
   motor (tiempo); luz=ldr ();
   movimiento=detector_presencia ();
   bombilla (luz, movimiento);  
   correcto=clave ();
   puerta (correcto);
+  Serial.read();
+    if (Serial.available() > 0)
+      if (dato=='0')
+        estado=0;
+}
+}
 }
