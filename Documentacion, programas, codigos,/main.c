@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "SerialPort.h"
 #include "SerialPort.C"
 #define MAX_DATA_LENGTH 255
@@ -46,23 +47,16 @@ printf ("Conectado con Arduino en el puerto %s\n",arduino->portName);
 
 
 // Bucle de la aplicación de envio
-printf ("0 - LED OFF, 1 - LED ON, 9 - SALIR");
-while (isConnected(arduino) && sendData!='9')
-{
+printf ("0 - TERMINAR, 1 - EMPEZAR, 9 - SALIR");
 sendData = getch();
+if (isConnected(arduino) && sendData!='9')
+{
+if (sendData==dato)
 writeSerialPort(arduino,&sendData, sizeof(char));
 }
 if (!isConnected(arduino))
 printf ("Se ha perdido la conexión con Arduino\n");
 }
 
-// Bucle de la aplicación de recibo
-while (isConnected(arduino))
-{
-readResult = readSerialPort(arduino,incomingData,
-MAX_DATA_LENGTH);
-if (readResult!=0)
-printf("%s - %d\n", incomingData,readResult);
-Sleep(10);
-}
+
 
