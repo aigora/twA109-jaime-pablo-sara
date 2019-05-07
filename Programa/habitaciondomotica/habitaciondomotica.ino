@@ -1,42 +1,40 @@
-#include <TimeLib.h> 
-#include <IRremote.h>
-#include <Servo.h>
-#define PIN_ANALOGICO A0 // El pin del LDR es el A0
-#define ESPERA_LECTURAS 1000 // tiempo en milisegundos entre lecturas de la intensidad de la luz
-#define dir1PinL  2    //Direccion de motor
-#define dir2PinL  4    //Direccion de motro
-#define speedPinL 6    // Para la velocidad
-#define speedPinR 5    //Para la velocidad
+#include <TimeLib.h>                //Libreria de la hora
+#include <IRremote.h>               //Libreria del receptor IR
+#include <Servo.h>                  //Librería del servo para la puerta
+#define PIN_ANALOGICO A0            // El pin del LDR es el A0
+#define ESPERA_LECTURAS 1000        // tiempo en milisegundos entre lecturas de la intensidad de la luz
+#define dir1PinL  2                 //Direccion de motor
+#define dir2PinL  4                  //Direccion de motor
+#define speedPinL 6                  // Para la velocidad
+#define speedPinR 5                   //Para la velocidad
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Funciones
-int descodificar(decode_results *);
-int clave (void);
-int ldr (void);
-int detector_presencia (void);
-void bombilla (int, int);
-void persiana (int);
-void puerta (int);
-int hora (void);
-void go_Advance(void);
-void go_Back(void);
-void stop_Stop(void);
-void set_Motorspeed(int,int);
-void init_GPIO(void);
-void motor (int);
-int dia;
-void puerta (int);
+int descodificar(decode_results *);  //Descodifica la señal IR
+int clave (void);                    //Comprueba si la clave es correcta
+int ldr (void);                      // Mide la cantidad de luz
+int detector_presencia (void);       //Observa si hay alguna perturbación en la habitación
+void bombilla (int, int);            //Enciende el LED
+void puerta (int);                   //Acciona el servo motor que bloquea la puerta
+int hora (void);                     //Informa sobre el momento del día
+void avanza (void);                  //Desenrolla el motor
+void retrocede(void);                //Enrolla el motor   
+void para (void);                    //Para el motor
+void set_Motorspeed(int,int);        //Velocidad de los motores
+void init_GPIO(void);                //Inicializa los motores
+void motor (int);                    //Acciona el motor hacia delante o atrás segun quiera la persiana
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Variables
 long cronometro_lecturas=0;                         //Ponemos el cronometro a 0
 long tiempo_transcurrido;                          //Tiempo que pasa
 unsigned int luminosidad;                         //Luminosidad
-float coeficiente_porcentaje=100.0/1023.0;
+float coeficiente_porcentaje=100.0/1023.0;        //Porcentaje de luz
 int estadopir;                                   //Detección o no de presencia
-time_t fecha;                     // Declaramos la variable del tipo time_t
+time_t fecha;                                    // Declaramos la variable del tipo time_t
 int luz, tiempo, movimiento, correcto;
 int repetir1=0, repetir2=0;
-int pos;
+int pos;                                         //Posicion en angulos del servo
+int dia;                                    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Posiciones de los sensores
 const int pir= 8;                               //PIR en pin 8
@@ -54,7 +52,8 @@ void setup()
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();               // Empezamos la recepción  por IR
-  servo.attach(2);
+  servo.attach(7);
+
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int descodificar(decode_results *resultados) //Función de descodificación de señal
@@ -67,6 +66,7 @@ int descodificar(decode_results *resultados) //Función de descodificación de s
 int digito (void)
 {          
   int numero;
+  irrecv.enableIRIn();                        // Empezamos la recepción  por IR
   if (irrecv.decode(&resultados)) 
    numero=descodificar(&resultados);           //Codigo del botón del mando
   delay(300);
@@ -175,10 +175,12 @@ int detector_presencia (void)
 //HORA
 int hora (void)
 {
-  fecha = now();                     // Obtenemos la fecha actual
   dia=0;
+  fecha = now();
   if ((hour(fecha))>=8 && (hour(fecha))<20)
   dia=1;
+  else
+  dia=0;
   return dia;
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -233,17 +235,6 @@ void init_GPIO()
 
 void motor (int tiempo)
 {
-  if (tiempo==0 && repetir1==0)
-  {
-  init_GPIO();
-  go_Advance();//Desenrolla
-  set_Motorspeed(255,255);
-  delay(5000);
-  stop_Stop();
-  repetir1=1;
-  repetir2=0;
-  }
-  else
   if (tiempo==1 && repetir2==0)
   {
   init_GPIO();
@@ -254,6 +245,17 @@ void motor (int tiempo)
   repetir2=1;
   repetir1=0;
   } 
+  else
+  if (tiempo==0 && repetir1==0)
+  {
+  init_GPIO();
+  go_Advance();//Desenrolla
+  set_Motorspeed(255,255);
+  delay(5000);
+  stop_Stop();
+  repetir1=1;
+  repetir2=0;
+  }  
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Servo puerta
@@ -276,11 +278,10 @@ void puerta (int correcto)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
-  luz=ldr ();
+  tiempo=hora ();
+  motor (tiempo); luz=ldr ();
   movimiento=detector_presencia ();
   bombilla (luz, movimiento);  
-  tiempo=hora ();
-  motor (tiempo);
   correcto=clave ();
   puerta (correcto);
 }
