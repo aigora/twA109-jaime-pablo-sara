@@ -18,13 +18,14 @@ void setup()
 {
  Serial.begin(9600);
  setTime(7, 59, 45, 13, 12, 2016);  // Establecemos la fecha
-  fecha = now();
+ 
                    
 }
 
 int hora (void)
 {
   dia=0;
+  fecha = now();
   if ((hour(fecha))>=8 && (hour(fecha))<20)
   dia=1;
   else
