@@ -1,8 +1,6 @@
 #include <TimeLib.h>                //Libreria de la hora
 #include <IRremote.h>               //Libreria del receptor IR
 #include <Servo.h>                  //Librería del servo para la puerta
-#define PIN_ANALOGICO A0            // El pin del LDR es el A0
-#define ESPERA_LECTURAS 1000        // tiempo en milisegundos entre lecturas de la intensidad de la luz
 #define dir1PinL  2                 //Direccion de motor
 #define dir2PinL  4                  //Direccion de motor
 #define speedPinL 6                  // Para la velocidad
@@ -25,6 +23,7 @@ void init_GPIO(void);                //Inicializa los motores
 void motor (int);                    //Acciona el motor hacia delante o atrás segun quiera la persiana
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Variables
+int LDR_Pin = A0;
 long cronometro_lecturas=0;                         //Ponemos el cronometro a 0
 long tiempo_transcurrido;                          //Tiempo que pasa
 unsigned int luminosidad;                         //Luminosidad
@@ -39,7 +38,7 @@ int dia;
 //Posiciones de los sensores
 const int pir= 8;                               //PIR en pin 8
 const int led= 12;                              //LED en pin 12
-int ir= 11;                                     //IR en pin 11
+const int ir= 11;                                     //IR en pin 11
 IRrecv irrecv(ir);           
 decode_results resultados;
 Servo servo;
@@ -52,7 +51,7 @@ void setup()
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();               // Empezamos la recepción  por IR
-  servo.attach(7);
+  servo.attach(9);
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,19 +147,13 @@ int digito (void)
 //LDR
 int ldr (void)   //Funcion de la cantidad de luz
   {
-    int porcentaje;
-    int dia=0;
-    tiempo_transcurrido=millis()-cronometro_lecturas;
-    if(tiempo_transcurrido>ESPERA_LECTURAS)
-    {
-    cronometro_lecturas=millis();
-    luminosidad=analogRead(PIN_ANALOGICO);
-    porcentaje= luminosidad*coeficiente_porcentaje;
-      if (porcentaje>25)                             //Si el porcentaje es mayor al 25%, se supone que es de día
-        dia=1;                                      //Es de día
-    }
-     return dia;
-   }
+dia=0;
+int LDRReading = analogRead(LDR_Pin);
+if (LDRReading>10)
+ dia=1;
+delay(250); 
+return dia;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PIR
 int detector_presencia (void)
@@ -190,7 +183,7 @@ void bombilla (int luz, int movimiento)
  if (luz==0 && movimiento==1)
   {
   digitalWrite(led,HIGH);         // Enciende el led
-  delay (20000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
+  delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
   digitalWrite(led,LOW);
   }
   else 
@@ -278,30 +271,9 @@ void puerta (int correcto)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
-  int estado;
-  char dato;
-  switch (estado)
-{
-case 0:
-{
- Serial.read();
- if (Serial.available() > 0)
-  if (dato=='1')
-    estado=1;
-}
-
-case 1:
-{
   tiempo=hora ();
-  motor (tiempo); luz=ldr ();
+  motor (tiempo); 
+  luz=ldr ();
   movimiento=detector_presencia ();
   bombilla (luz, movimiento);  
-  correcto=clave ();
-  puerta (correcto);
-  Serial.read();
-    if (Serial.available() > 0)
-      if (dato=='0')
-        estado=0;
-}
-}
 }
