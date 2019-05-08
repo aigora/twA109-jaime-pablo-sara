@@ -6,6 +6,8 @@
 #define speedPinL 6                  // Para la velocidad
 #define speedPinR 5                   //Para la velocidad
 
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Funciones
 int descodificar(decode_results *);  //Descodifica la señal IR
@@ -24,6 +26,8 @@ void motor (int);                    //Acciona el motor hacia delante o atrás s
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 int numero;
+int dato;
+int error;
 int LDR_Pin = A0;
 int estadopir;                                   //Detección o no de presencia
 time_t fecha;                                    // Declaramos la variable del tipo time_t
@@ -35,9 +39,9 @@ int dia;
 //Posiciones de los sensores
 const int pir= 8;                               //PIR en pin 8
 const int led= 12;                              //LED en pin 12
-const int ir= 11;                                     //IR en pin 11
-IRrecv irrecv(ir);           
-decode_results resultados;
+int RECV_PIN = 11;                                    //IR en pin 11
+IRrecv irrecv(RECV_PIN);
+decode_results results;
 Servo servo;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Estado inicial
@@ -47,89 +51,31 @@ void setup()
   setTime(19, 59, 45, 13, 12, 2016);  // Establecemos la fecha
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
-  irrecv.enableIRIn();               // Empezamos la recepción  por IR
+  irrecv.enableIRIn();             // Empezamos la recepción  por IR
   servo.attach(9);
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int descodificar(decode_results *resultados) //Función de descodificación de señal
+int dump(decode_results *results) 
 {
-  int dato;
- dato=(resultados->value);                   //Codigo del botón del mando
+ dato=(results->value);
  return dato;
-}
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int digito (void)
-{          
-  int numero;
-  irrecv.enableIRIn();                        // Empezamos la recepción  por IR
-  if (irrecv.decode(&resultados)) 
-   numero=descodificar(&resultados);           //Codigo del botón del mando
-  delay(300);
-  return numero;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //MANDO
- int clave (int numero)
+int clave (void)
+{
+ error=1;
+ if (irrecv.decode(&results)) 
   {
-  int error;
-  switch (numero)
-  {
-    case -23971: 
-                 {
-                 error=1;
-                 break;
-                 }
-    case 25245: 
-                 {
-                 error=0;
-                 break;
-                 }  
-    case -7651: 
-                  {
-                 error=1;
-                 break;
-                 }  
-     case 8925:
-                 {
-                 error=1;
-                 break;
-                 }  
-     case 765: 
-                 {
-                  error=1;
-                 break;
-                 }  
-     case -15811: 
-                 {
-                  error=1;
-                 break;
-                 } 
-     case -8161: 
-                 {
-                  error=1;
-                 break;
-                 }  
-     case -22441: 
-                 {
-                 error=1;
-                 break;
-                 }  
-     case -28561: 
-                 {
-                  error=1;
-                 break;
-                 }
-     case -26521: 
-                 {
-                 error=1;
-                 break;
-                 }
-     default: 
-     error=1;
-  }              
-  return error;
+   numero=dump(&results);
+   if (numero==765) //5
+    error=0;
+   irrecv.resume();
   }
+  delay(300);
+  return error;
+}
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //LDR
 int ldr (void)   //Funcion de la cantidad de luz
@@ -239,25 +185,31 @@ void motor (int tiempo)
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Servo puerta
-void puerta (int fallido)
+void puerta (int correcto)
 {
- if (fallido==0)
+ if (correcto==0)
  {
  for(pos = 0; pos <= 180; pos += 1) // goes from 0 degrees to 180 degrees 
   {                                  // in steps of 1 degree 
     servo.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(20);                       // waits 15ms for the servo to reach the position 
   } 
+  delay (2000);
     for(pos = 180; pos>=0; pos-=1)     // goes from 180 degrees to 0 degrees 
   {                                
     servo.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(20);                       // waits 15ms for the servo to reach the position 
   }   
-  }
+ }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
-  correcto=clave (numero);
-  puerta (correcto);
+tiempo=hora ();
+motor (tiempo); 
+luz=ldr ();
+movimiento=detector_presencia ();
+bombilla (luz, movimiento); 
+correcto= clave();
+puerta(correcto);
 }
