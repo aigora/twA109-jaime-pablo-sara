@@ -1,0 +1,32 @@
+  int estado;
+  char dato;
+  
+  switch (estado)
+{
+case 0:
+{
+ Serial.read();
+ if (Serial.available() > 0)
+  if (dato=='1')
+    estado=1;
+}
+
+case 1:
+{
+  tiempo=hora ();
+  motor (tiempo); luz=ldr ();
+  movimiento=detector_presencia ();
+  bombilla (luz, movimiento);  
+  correcto=clave ();
+  puerta (correcto);
+  Serial.read();
+    if (Serial.available() > 0)
+      if (dato=='0')
+        estado=0;
+}
+}
+}
+
+
+
+
