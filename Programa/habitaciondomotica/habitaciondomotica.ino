@@ -115,9 +115,9 @@ int hora (void)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //LED
-void bombilla (int luz)
+void bombilla (int luz, int movimiento)
 {
- if (luz==1)
+ if (luz==0 && movimiento==1)
   {
   digitalWrite(led,HIGH);         // Enciende el led
   delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
@@ -213,7 +213,7 @@ tiempo=hora ();
 motor (tiempo); 
 luz=ldr ();
 movimiento=detector_presencia ();
-bombilla (luz); 
+bombilla (luz,movimiento); 
 correcto= clave();
 puerta(correcto);
 }
