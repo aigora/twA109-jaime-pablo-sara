@@ -25,19 +25,20 @@ void init_GPIO(void);                //Inicializa los motores
 void motor (int);                    //Acciona el motor hacia delante o atrás segun quiera la persiana
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
+int movimiento;
 int numero;
 int dato;
 int error;
 int LDR_Pin = A0;
 int estadopir;                                   //Detección o no de presencia
 time_t fecha;                                    // Declaramos la variable del tipo time_t
-int luz, tiempo, movimiento, correcto;
+int luz, tiempo, correcto;
 int repetir1=0, repetir2=0;
 int pos;                                         //Posicion en angulos del servo
 int dia;                                    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Posiciones de los sensores
-const int pir= 8;                               //PIR en pin 8
+const int pir= 7;                               //PIR en pin 8
 const int led= 12;                              //LED en pin 12
 int RECV_PIN = 11;                                    //IR en pin 11
 IRrecv irrecv(RECV_PIN);
@@ -91,10 +92,13 @@ return dia;
 //PIR
 int detector_presencia (void)
   {
-  int presencia=0;
-  int valor= digitalRead(pir);         //Leer pir
+  int presencia;
+  int valor;
+  valor= digitalRead(pir);                //Leer pir
     if (valor == HIGH )                  //Si detecta presencia
        presencia=1; 
+    else
+      presencia=0;
     return presencia;    
   }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -111,12 +115,12 @@ int hora (void)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //LED
-void bombilla (int luz, int movimiento)
+void bombilla (int luz)
 {
- if (luz==0 && movimiento==1)
+ if (luz==1)
   {
   digitalWrite(led,HIGH);         // Enciende el led
-  delay (20000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
+  delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
   digitalWrite(led,LOW);
   }
   else 
@@ -209,7 +213,7 @@ tiempo=hora ();
 motor (tiempo); 
 luz=ldr ();
 movimiento=detector_presencia ();
-bombilla (luz, movimiento); 
+bombilla (luz); 
 correcto= clave();
 puerta(correcto);
 }
