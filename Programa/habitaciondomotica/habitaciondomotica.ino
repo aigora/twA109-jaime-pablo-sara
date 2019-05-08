@@ -9,7 +9,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Funciones
 int descodificar(decode_results *);  //Descodifica la señal IR
-int clave (void);                    //Comprueba si la clave es correcta
+int clave (int);                    //Comprueba si la clave es correcta
 int ldr (void);                      // Mide la cantidad de luz
 int detector_presencia (void);       //Observa si hay alguna perturbación en la habitación
 void bombilla (int, int);            //Enciende el LED
@@ -22,12 +22,9 @@ void set_Motorspeed(int,int);        //Velocidad de los motores
 void init_GPIO(void);                //Inicializa los motores
 void motor (int);                    //Acciona el motor hacia delante o atrás segun quiera la persiana
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///Variables
+///
+int numero;
 int LDR_Pin = A0;
-long cronometro_lecturas=0;                         //Ponemos el cronometro a 0
-long tiempo_transcurrido;                          //Tiempo que pasa
-unsigned int luminosidad;                         //Luminosidad
-float coeficiente_porcentaje=100.0/1023.0;        //Porcentaje de luz
 int estadopir;                                   //Detección o no de presencia
 time_t fecha;                                    // Declaramos la variable del tipo time_t
 int luz, tiempo, movimiento, correcto;
@@ -47,7 +44,7 @@ Servo servo;
 void setup()    
 {
   Serial.begin(9600);
-  setTime(7, 59, 45, 13, 12, 2016);  // Establecemos la fecha
+  setTime(19, 59, 45, 13, 12, 2016);  // Establecemos la fecha
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();               // Empezamos la recepción  por IR
@@ -73,74 +70,64 @@ int digito (void)
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //MANDO
- int clave ()
+ int clave (int numero)
   {
-  int contrasena [50];
-  int password []={0,0,0,0};
-  int error=0;
-  int i;
-  for (i=0;digito!=14535;i++)
-  {
-  switch (digito())
+  int error;
+  switch (numero)
   {
     case -23971: 
                  {
-                 contrasena[i]=1;
+                 error=1;
                  break;
                  }
     case 25245: 
                  {
-                 contrasena[i]=2;
+                 error=0;
                  break;
                  }  
     case -7651: 
                   {
-                 contrasena[i]=3;
+                 error=1;
                  break;
                  }  
      case 8925:
                  {
-                 contrasena[i]=4;
+                 error=1;
                  break;
                  }  
      case 765: 
                  {
-                 contrasena[i]=5;
+                  error=1;
                  break;
                  }  
      case -15811: 
                  {
-                 contrasena[i]=6;
+                  error=1;
                  break;
                  } 
      case -8161: 
                  {
-                 contrasena[i]=7;
+                  error=1;
                  break;
                  }  
      case -22441: 
                  {
-                 contrasena[i]=8;
+                 error=1;
                  break;
                  }  
      case -28561: 
                  {
-                 contrasena[i]=9;
+                  error=1;
                  break;
                  }
      case -26521: 
                  {
-                 contrasena[i]=0;
+                 error=1;
                  break;
                  }
-  }
-  }
-  if (digito==14535)
-     for (i=0;i<4 && error==1;i++)
-       if (contrasena[i]!=password[i])
-           error=1;
- 
-                
+     default: 
+     error=1;
+  }              
   return error;
   }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -159,8 +146,8 @@ return dia;
 int detector_presencia (void)
   {
   int presencia=0;
-  int value= digitalRead(pir);         //Leer pir
-    if (value == HIGH )                  //Si detecta presencia
+  int valor= digitalRead(pir);         //Leer pir
+    if (valor == HIGH )                  //Si detecta presencia
        presencia=1; 
     return presencia;    
   }
@@ -183,7 +170,7 @@ void bombilla (int luz, int movimiento)
  if (luz==0 && movimiento==1)
   {
   digitalWrite(led,HIGH);         // Enciende el led
-  delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
+  delay (20000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
   digitalWrite(led,LOW);
   }
   else 
@@ -252,28 +239,25 @@ void motor (int tiempo)
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///Servo puerta
-void puerta (int correcto)
+void puerta (int fallido)
 {
- if (correcto==1)
+ if (fallido==0)
  {
  for(pos = 0; pos <= 180; pos += 1) // goes from 0 degrees to 180 degrees 
   {                                  // in steps of 1 degree 
     servo.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
+    delay(20);                       // waits 15ms for the servo to reach the position 
   } 
     for(pos = 180; pos>=0; pos-=1)     // goes from 180 degrees to 0 degrees 
   {                                
     servo.write(pos);              // tell servo to go to position in variable 'pos' 
-    delay(15);                       // waits 15ms for the servo to reach the position 
+    delay(20);                       // waits 15ms for the servo to reach the position 
   }   
   }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
-  tiempo=hora ();
-  motor (tiempo); 
-  luz=ldr ();
-  movimiento=detector_presencia ();
-  bombilla (luz, movimiento);  
+  correcto=clave (numero);
+  puerta (correcto);
 }
