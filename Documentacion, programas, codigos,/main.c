@@ -45,7 +45,7 @@ if (isConnected(arduino))
 printf ("Conectado con Arduino en el puerto %s\n",arduino->portName);
 }
 
-
+char dato;
 // Bucle de la aplicación de envio
 printf ("0 - TERMINAR, 1 - EMPEZAR, 9 - SALIR");
 sendData = getch();
