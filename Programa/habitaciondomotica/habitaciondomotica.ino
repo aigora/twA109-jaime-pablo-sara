@@ -120,7 +120,8 @@ void bombilla (int luz, int movimiento)
  if (luz==0 && movimiento==1)
   {
   digitalWrite(led,HIGH);         // Enciende el led
-  delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento 
+  delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento
+  Serial.println("LED"); 
   digitalWrite(led,LOW);
   }
   else 
@@ -133,12 +134,15 @@ void go_Advance(void)  //Forward
 {
   digitalWrite(dir1PinL, HIGH);
   digitalWrite(dir2PinL,LOW);
+  Serial.println("AVANZA");
+  
 }
 
 void go_Back(void)  //Reverse
 {
   digitalWrite(dir1PinL, LOW);
   digitalWrite(dir2PinL,HIGH);
+  
 }
 void stop_Stop()    //Stop
 {
@@ -171,6 +175,7 @@ void motor (int tiempo)
   go_Back();//Enrolla
   set_Motorspeed(255,255);
   delay(5000);
+  Serial.println("AVANZA");
   stop_Stop();
   repetir2=1;
   repetir1=0;
@@ -182,6 +187,7 @@ void motor (int tiempo)
   go_Advance();//Desenrolla
   set_Motorspeed(255,255);
   delay(5000);
+  Serial.println("RETROCEDE");
   stop_Stop();
   repetir1=1;
   repetir2=0;
@@ -203,11 +209,28 @@ void puerta (int correcto)
   {                                
     servo.write(pos);              // tell servo to go to position in variable 'pos' 
     delay(20);                       // waits 15ms for the servo to reach the position 
-  }   
+  }
+  Serial.println("SERVO");   
  }
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
+{
+  int estado=0;
+  char dato;
+  if (Serial.available() > 0)
+  
+  switch (estado)
+{
+case 0:
+{
+ dato=Serial.read();
+ if (dato=='1')
+    estado=1;
+    break;
+}
+
+case 1:
 {
 tiempo=hora ();
 motor (tiempo); 
@@ -216,4 +239,10 @@ movimiento=detector_presencia ();
 bombilla (luz,movimiento); 
 correcto= clave();
 puerta(correcto);
+dato=Serial.read();
+  if (dato=='0')
+   estado=0;
+}
+}
+
 }
