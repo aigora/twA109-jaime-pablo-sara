@@ -1,12 +1,11 @@
   int estado;
   char dato;
-  
+  if (Serial.available() > 0)
   switch (estado)
 {
 case 0:
 {
- Serial.read();
- if (Serial.available() > 0)
+ dato=Serial.read();
   if (dato=='1')
     estado=1;
 }
@@ -19,10 +18,9 @@ case 1:
   bombilla (luz, movimiento);  
   correcto=clave ();
   puerta (correcto);
-  Serial.read();
-    if (Serial.available() > 0)
-      if (dato=='0')
-        estado=0;
+  dato=Serial.read();
+  if (dato=='0')
+   estado=0;
 }
 }
 }

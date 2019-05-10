@@ -6,6 +6,7 @@
 #include "SerialPort.C"
 #define MAX_DATA_LENGTH 255
 
+
 // Funciones prototipo
 void autoConnect(SerialPort *arduino,char*);
 
@@ -43,20 +44,24 @@ Crear_Conexion(arduino,arduino->portName);
 if (isConnected(arduino))
 {
 printf ("Conectado con Arduino en el puerto %s\n",arduino->portName);
-}
-
-char dato;
+char envio[longEnvio];
 // Bucle de la aplicación de envio
 printf ("0 - TERMINAR, 1 - EMPEZAR, 9 - SALIR");
-sendData = getch();
-if (isConnected(arduino) && sendData!='9')
+while (isConnected(arduino) && sendData!='9')
 {
-if (sendData==dato)
+sendData = getch();
+if (sendData=='1')
+writeSerialport (arduino,&sendData,sizeof(char));
+else
+if  (sendData=='0')
 writeSerialPort(arduino,&sendData, sizeof(char));
 }
+
+}
+
 if (!isConnected(arduino))
 printf ("Se ha perdido la conexión con Arduino\n");
-}
+
 
 
 
