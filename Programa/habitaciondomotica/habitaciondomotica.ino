@@ -136,7 +136,7 @@ void go_Advance(void)  //Forward
 {
   digitalWrite(dir1PinL, HIGH);
   digitalWrite(dir2PinL,LOW);
-  Serial.println("AVANZA");
+
   
 }
 
