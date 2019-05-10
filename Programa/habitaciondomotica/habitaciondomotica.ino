@@ -107,7 +107,7 @@ int hora (void)
 {
   dia=0;
   fecha = now();
-  if ((hour(fecha))>=8 && (hour(fecha))<20)
+  if (((hour(fecha))>=8 && (hour(fecha))<12)||((hour(fecha))>=18 && (hour(fecha))<20))
   dia=1;
   else
   dia=0;
@@ -115,9 +115,9 @@ int hora (void)
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //LED
-void bombilla (int luz, int movimiento)
+void bombilla (int luz)
 {
- if (luz==0 && movimiento==1)
+ if (luz==0)
   {
   digitalWrite(led,HIGH);         // Enciende el led
   delay (2000);                  //Espera 20 segundos para apagar la luz si no detecta movimiento
@@ -236,7 +236,7 @@ tiempo=hora ();
 motor (tiempo); 
 luz=ldr ();
 movimiento=detector_presencia ();
-bombilla (luz,movimiento); 
+bombilla (luz); 
 correcto= clave();
 puerta(correcto);
 dato=Serial.read();
