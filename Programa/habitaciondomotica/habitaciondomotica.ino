@@ -38,7 +38,7 @@ int pos;                                         //Posicion en angulos del servo
 int dia;                                    
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Posiciones de los sensores
-const int pir= 7;                               //PIR en pin 8
+const int pir= 7;                               //PIR en pin 7
 const int led= 12;                              //LED en pin 12
 int RECV_PIN = 11;                                    //IR en pin 11
 IRrecv irrecv(RECV_PIN);
