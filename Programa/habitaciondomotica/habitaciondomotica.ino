@@ -5,6 +5,8 @@
 #define dir2PinL  4                  //Direccion de motor
 #define speedPinL 6                  // Para la velocidad
 #define speedPinR 5                   //Para la velocidad
+ int estado;
+ char dato1;
 
 
 
@@ -107,7 +109,7 @@ int hora (void)
 {
   dia=0;
   fecha = now();
-  if (((hour(fecha))>=8 && (hour(fecha))<12)||((hour(fecha))>=18 && (hour(fecha))<20))
+  if ((hour(fecha))>=8 && (hour(fecha))<20)
   dia=1;
   else
   dia=0;
@@ -216,17 +218,22 @@ void puerta (int correcto)
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void loop() 
 {
-int estado=0;
-  char dato;
+
   if (Serial.available() > 0)
+  {
+  dato1=Serial.read();
+  if (dato1=='1')
+  estado=1;
+  else
+  if (dato1=='0')
+  estado=0;
+  }
   
-  switch (estado)
+switch (estado)
 {
 case 0:
 {
- dato=Serial.read();
- if (dato=='1')
-    estado=1;
+  estado=0;
     break;
 }
 
@@ -239,10 +246,7 @@ movimiento=detector_presencia ();
 bombilla (luz); 
 correcto= clave();
 puerta(correcto);
-dato=Serial.read();
-  if (dato=='0')
-   estado=0;
+estado=1;
 }
 }
-
 }
