@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "SerialPort.h"
 #include "SerialPort.C"
 #define MAX_DATA_LENGTH 255
@@ -45,14 +46,20 @@ sendData = getch();
 writeSerialPort(arduino,&sendData, sizeof(char));
 readResult=readSerialPort(arduino,incomingData,MAX_DATA_LENGTH);
 if (readResult!=0)
-{
+{ 
+ time_t t;
+struct tm *tm;
+  char fechayhora[100];
+  t=time(NULL);
+  tm=localtime(&t);
+  strftime(fechayhora, 100, "%d/%m/%Y %H:%M %S, tm);
     accion=incomingData;
 	FILE *registro;
 	registro=fopen ("./registo.txt","at");
 	if (registro==NULL)
 	printf ("No se encuentra el fichero\n");
 	else
-	fprintf (registro,"%s\n",accion);
+	fprintf (registro,"%s %s\n",accion,fechayhora);
     fclose(registro);
 }
 sleep(10);
