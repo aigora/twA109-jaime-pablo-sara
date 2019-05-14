@@ -5,8 +5,9 @@
 #define dir2PinL  4                  //Direccion de motor
 #define speedPinL 6                  // Para la velocidad
 #define speedPinR 5                   //Para la velocidad
- int estado;
- char dato1;
+#define CINCO 765                     
+ int estado;                          //Para la activación y desactivación de la placa
+ char dato1;                          //Para la activación y desactivación de la placa
 
 
 
@@ -27,8 +28,8 @@ void init_GPIO(void);                //Inicializa los motores
 void motor (int);                    //Acciona el motor hacia delante o atrás segun quiera la persiana
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-int movimiento;
-int numero;
+int movimiento;                              //Hay movimiento
+int numero;                                   //Codigo del boton del mando
 int dato;
 int error;
 int LDR_Pin = A0;
@@ -55,14 +56,14 @@ void setup()
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();             // Empezamos la recepción  por IR
-  servo.attach(9);
+  servo.attach(9);                 //Pin del servo
 
 }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int dump(decode_results *results) 
+int dump(decode_results *results)      //Descodificación de los resultados
 {
  dato=(results->value);
- return dato;
+ return dato;                        //Nos devuelve el código del botón pulsado
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //MANDO
@@ -71,13 +72,13 @@ int clave (void)
  error=1;
  if (irrecv.decode(&results)) 
   {
-   numero=dump(&results);
-   if (numero==765) //5
+   numero=dump(&results);                        
+   if (numero==CINCO) //5             //Si el pulsado es el cinco(en este caso), no hay error. Si es otro botón da error
     error=0;
-   irrecv.resume();
+   irrecv.resume();                  //Comienza la recepción de nuevo
   }
   delay(300);
-  return error;
+  return error;                      //Devuelve error o no error
 }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //LDR
@@ -85,23 +86,23 @@ int ldr (void)   //Funcion de la cantidad de luz
   {
 dia=0;
 int LDRReading = analogRead(LDR_Pin);
-if (LDRReading>10)
+if (LDRReading>10)                       //Si supera esa cantidad de luz, es de día, si no, no.
  dia=1;
 delay(250); 
-return dia;
+return dia;                              //Devuelve si es de día o no
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //PIR
 int detector_presencia (void)
   {
-  int presencia;
+  int presencia;                           
   int valor;
   valor= digitalRead(pir);                //Leer pir
-    if (valor == HIGH )                  //Si detecta presencia
+    if (valor == HIGH )                  //Si detecta presencia, presencia=1.
        presencia=1; 
     else
-      presencia=0;
-    return presencia;    
+      presencia=0;                       //Si no detecta presencia, presencia=0.
+    return presencia;                    //Devuelve la presencia
   }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //HORA
