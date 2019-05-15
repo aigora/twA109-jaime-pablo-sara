@@ -48,12 +48,14 @@ readResult=readSerialPort(arduino,incomingData,MAX_DATA_LENGTH);
 if (readResult!=0)
 { 
  time_t t;
+ int i;
 struct tm *tm;
   char fechayhora[100];
   t=time(NULL);
   tm=localtime(&t);
-  strftime(fechayhora, 100, "%d/%m/%Y %H:%M %S, tm);
-    accion=incomingData;
+  strftime(fechayhora, 100, "%d/%m/%Y %H:%M %S", tm);
+    for (i=0;i<=250 && incomingData!='\0';i++)
+    accion[i]=incomingData[i];
 	FILE *registro;
 	registro=fopen ("./registo.txt","at");
 	if (registro==NULL)
