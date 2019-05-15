@@ -44,7 +44,7 @@ int dia;                                        //Indica si es de día o no
 //Posiciones de los sensores
 const int pir= 7;                               //PIR en pin 7
 const int led= 12;                              //LED en pin 12
-int RECV_PIN = 11;                                    //IR en pin 11
+int RECV_PIN = 11;                              //IR en pin 11
 IRrecv irrecv(RECV_PIN);                        //Recibe del receptor IR
 decode_results results;                        //Descodifica resultados
 Servo servo;                                  //El servo de la puerta
@@ -54,7 +54,7 @@ Servo servo;                                  //El servo de la puerta
 void setup()    
 {
   Serial.begin(9600);
-  setTime(19, 59, 45, 13, 12, 2016);  // Establecemos la fecha
+  setTime(19, 59, 45, 13, 12, 2018);  // Establecemos la fecha
   pinMode(pir, INPUT);               //El pir es un dispositivo de entrada
   pinMode (led, OUTPUT);             //El led es un dispositivo de salida
   irrecv.enableIRIn();             // Empezamos la recepción  por IR
@@ -117,7 +117,7 @@ int hora (void)
 {
   dia=0;
   fecha = now();                                                                            //Mira la hora que es
-  if (((hour(fecha))>=8 && (hour(fecha))<12)|| ((hour(fecha))>=18 && (hour(fecha))<20))     //Si está entre las 8 y las 12 ó entre las 18 y las 20, se considera de día para alzar la persiana
+  if ((hour(fecha))>=8 && (hour(fecha))<20)     //Si está entre las 8 y las 12 ó entre las 18 y las 20, se considera de día para alzar la persiana
   dia=1;
   else                                                                                      //Si no, se considera de noche
   dia=0;
