@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include "SerialPort.h"
 #include "SerialPort.C"
+#include <time.h>
 #define MAX_DATA_LENGTH 255
 char accion[10];
 // Funciones prototipo
@@ -37,6 +37,21 @@ Crear_Conexion(arduino,arduino->portName);
 if (isConnected(arduino))
 {
 printf ("Conectado con Arduino en el puerto %s\n",arduino->portName);
+time_t t;
+struct tm *tm;
+  char fechayhora[100];
+  t=time(NULL);
+  tm=localtime(&t);
+  strftime(fechayhora, 100, "%d/%m/%Y %H:%M:%S", tm);
+  FILE *registro;
+	registro=fopen ("./registo.txt","at");
+	if (registro==NULL)
+	printf ("No se encuentra el fichero\n");
+	else
+	{
+	fprintf (registro,"%s\n",fechayhora);
+    fclose(registro);
+	}
 }
 // Bucle de la aplicación
 printf ("0 - OFF, 1 - ON, 9 - SALIR\n");
@@ -47,22 +62,24 @@ writeSerialPort(arduino,&sendData, sizeof(char));
 readResult=readSerialPort(arduino,incomingData,MAX_DATA_LENGTH);
 if (readResult!=0)
 { 
- time_t t;
- int i;
+time_t t;
 struct tm *tm;
   char fechayhora[100];
   t=time(NULL);
   tm=localtime(&t);
-  strftime(fechayhora, 100, "%d/%m/%Y %H:%M %S", tm);
+  strftime(fechayhora, 100, "%d/%m/%Y %H:%M:%S", tm);
+	int i;
     for (i=0;i<=250 && incomingData!='\0';i++)
     accion[i]=incomingData[i];
-	FILE *registro;
+    FILE *registro;
 	registro=fopen ("./registo.txt","at");
 	if (registro==NULL)
 	printf ("No se encuentra el fichero\n");
 	else
-	fprintf (registro,"%s %s\n",accion,fechayhora);
+	{
+	fprintf (registro,"%s %s\n\n",accion,fechayhora);
     fclose(registro);
+	}
 }
 sleep(10);
 }
